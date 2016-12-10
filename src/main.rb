@@ -10,6 +10,7 @@ require_relative 'translators/pascal'
 require_relative 'translators/python'
 require_relative 'translators/cpp'
 require_relative 'translators/docs'
+require_relative 'translators/swift'
 
 # Access to config vars
 include Config

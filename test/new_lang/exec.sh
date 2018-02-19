@@ -58,7 +58,7 @@ function run_swift
 {
   cp "test${LANG_TEST}/test_program.py" .
   echo "Running Swift program"
-  swiftc test${LANG_TEST}/TestProgram.swift -L. -lSplashKit -I../out/clib -I../out/swift -Xlinkerl,-rpath,@loader_path -o swift_test${LANG_TEST}
+  swiftc test${LANG_TEST}/TestProgram.swift -L. -lSplashKit -I../out/clib -I../out/swift -Xlinker l,-rpath,@loader_path -o swift_test${LANG_TEST}
 }
 
 echo "Do you wish to run the Swift version?"

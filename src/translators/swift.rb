@@ -14,7 +14,7 @@ module Translators
 
     def render_templates
       {
-        'splashkit.swift' => read_template('splashkit.swift')
+        'splashkit.swift' => read_template('splashkit.swift'),
         'module.modulemap' => read_template('module.modulemap')
       }
     end

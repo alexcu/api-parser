@@ -24,20 +24,21 @@ module Translators
       types:      :pascal_case,
       functions:  :pascal_case,
       variables:  :camel_case,
+      fields:     :camel_case,
       constants:  :upper_case
     }
     DIRECT_TYPES = {
+      'int8_t'          => 'Char',
       'int'             => 'Integer',
       'short'           => 'ShortInt',
-      'long'            => 'Int64',
+      'int64_t'         => 'Int64',
       'float'           => 'Single',
       'double'          => 'Double',
       'byte'            => 'Char',
       'char'            => 'Char',
       'unsigned char'   => 'Char',
       'unsigned int'    => 'Cardinal',
-      'unsigned short'  => 'Word',
-      'unsigned long'   => 'Longword'
+      'unsigned short'  => 'Word'
     }
     SK_TYPES_TO_PASCAL_TYPES = {
       'bool'      => 'Boolean',
@@ -88,13 +89,6 @@ module Translators
         end
         "#{var}#{param_name.variable_case}: #{type}"
       end.join('; ')
-    end
-
-    #
-    # Joins the argument list using a comma
-    #
-    def argument_list_syntax(arguments)
-      arguments.join(', ')
     end
 
     #

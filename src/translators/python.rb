@@ -8,7 +8,7 @@ module Translators
   class Python < AbstractTranslator
     include TranslatorHelper
 
-    def initialize(data, logging)
+    def initialize(data, logging = false)
       super(data, logging)
     end
 
@@ -24,18 +24,19 @@ module Translators
       types:      :pascal_case,
       functions:  :snake_case,
       variables:  :snake_case,
+      fields:     :snake_case,
       constants:  :snake_case
     }
     DIRECT_TYPES = {
       'int'             => 'c_int',
       'short'           => 'c_short',
-      'long'            => 'c_longlong',
+      'int64_t'         => 'c_int64',
       'float'           => 'c_float',
       'double'          => 'c_double',
+      'int8_t'          => 'c_byte',
       'byte'            => 'c_byte',
       'unsigned int'    => 'c_uint',
-      'unsigned short'  => 'c_ushort',
-      'unsigned long'   => 'c_ulonglong'
+      'unsigned short'  => 'c_ushort'
     }
     SK_TYPES_TO_PYTHON_TYPES = {
       'bool'      => 'bool',
@@ -94,6 +95,12 @@ module Translators
       "#{function[:name].function_case}#{function[:attributes][:suffix].nil? ? '':'_'}#{function[:attributes][:suffix]}"
     end
 
+    def sk_signature_for(function)
+      name            = sk_function_name_for(function)
+      parameter_list  = function[:parameters].map do |param_name, param_data| param_name end.join(', ')
+      "def #{name}(#{parameter_list}):"
+    end
+
     #
     # Convert a list of parameters to a Pascal parameter list
     # Use the type conversion function to get which type to use
@@ -117,22 +124,16 @@ module Translators
       end.join(', ')
     end
 
-    #
-    # Joins the argument list using a comma
-    #
     def argument_list_syntax(arguments)
-      arguments.join(', ')
-    end
-
-    def lib_argument_list_for(function)
-      args = function[:parameters].map do |param_name, param_data|
-        result = "__skparam__#{param_name}"
-        if param_data[:is_reference] && !param_data[:is_const]
-          result = "byref(#{result})"
+      args = arguments.map do |arg_data| arg_data[:name]
+        if arg_data[:param_data][:is_reference] && !arg_data[:param_data][:is_const]
+          "byref(#{arg_data[:name]})"
+        else
+          arg_data[:name]
         end
-        result
       end
-      argument_list_syntax(args)
+
+      args.join(', ')
     end
 
     #
